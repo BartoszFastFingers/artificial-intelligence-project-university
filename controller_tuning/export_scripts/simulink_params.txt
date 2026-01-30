@@ -1,0 +1,16 @@
+PARAMETRY DLA SIMULINKA
+=======================
+
+TRANSFER FCN (G(s) = K/(T*s + 1)):
+  Numerator: [0.048484]
+  Denominator: [0.010090, 1]
+
+TRANSPORT DELAY:
+  Time delay: 0.010891 s
+
+PID CONTROLLER (Parallel form):
+  Kp (P): 7.430602
+  Ki (I): 736.444310
+  Kd (D): 0.000000
+  Ti: 0.010090
+  Td: 0.000000

@@ -1,0 +1,51 @@
+clear
+clc
+
+s = serialport("/dev/ttyACM1",115200);
+configureTerminator(s,"LF");
+flush(s);
+header = zeros(3,1);
+
+for i = 1:3
+    parts = strsplit(readline(s));
+    header(i) = str2double(parts{3});
+end
+
+CCR = header(1);
+sample_time = header(2);
+observation_time = header(3);
+
+fprintf("CCR = %.0f\n", CCR);
+fprintf("Ts = %.3f ms\n", sample_time);
+fprintf("Tobs = %.1f ms\n", observation_time);
+
+time = [];
+RPM = [];
+
+samples = observation_time /sample_time + 1;
+
+
+while length(time) < samples
+    line = strtrim(readline(s));
+    C = sscanf(line, '%d ms: %f RPM');
+    if numel(C) == 2
+        time(end+1) = C(1);
+        RPM(end+1) = C(2);
+end
+end
+
+clear s  
+
+data = [time(:) RPM(:)];
+
+fid = fopen("step_response.csv","w");
+fprintf(fid,"time,rpm\n");
+fprintf(fid,"%f,%f\n", data');3
+fclose(fid);
+
+figure
+plot(time,RPM)
+grid on
+xlabel("Time [s]")
+ylabel("RPM")
+title(sprintf('DC Motor Step Response for Ts = %d ms', sample_time))
